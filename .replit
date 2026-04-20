@@ -1,0 +1,45 @@
+modules = ["nodejs-24"]
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[[ports]]
+localPort = 8081
+externalPort = 80
+
+[[ports]]
+localPort = 18115
+externalPort = 3000
+
+[userenv]
+
+[userenv.shared]
+EXPO_PUBLIC_FIREBASE_API_KEY = "AIzaSyD2iMuDAsd3_OZGogs87Pc8muvqQCyK4AQ"
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN = "mymod-788d5.firebaseapp.com"
+EXPO_PUBLIC_FIREBASE_PROJECT_ID = "mymod-788d5"
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET = "mymod-788d5.firebasestorage.app"
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "769573761132"
+EXPO_PUBLIC_FIREBASE_APP_ID = "1:769573761132:android:ff9724fe633eb21a256849"
+
+[objectStorage]
+defaultBucketID = "replit-objstore-51a45940-49a1-43a1-ab9f-5b5a2a7a375e"

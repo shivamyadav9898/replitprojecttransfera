@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>APK Store</title>
+</head>
+<body>
+
+<h2>Upload App</h2>
+
+<input type="file" id="apkFile"><br><br>
+<input type="text" id="appName" placeholder="App Name"><br><br>
+<textarea id="appDesc" placeholder="Description"></textarea><br><br>
+
+<button id="uploadBtn">Upload App</button>
+
+<hr>
+
+<h2>Apps List</h2>
+<div id="apps"></div>
+
+<script type="module">
+  import { uploadApp } from "./upload.js";
+  import { db } from "./firebase.js";
+  import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  document.getElementById("uploadBtn").onclick = async () => {
+    const file = document.getElementById("apkFile").files[0];
+    const name = document.getElementById("appName").value;
+    const desc = document.getElementById("appDesc").value;
+
+    await uploadApp(file, name, desc);
+    loadApps();
+  };
+
+  async function loadApps() {
+    const snapshot = await getDocs(collection(db, "apps"));
+    let html = "";
+
+    snapshot.forEach(doc => {
+      const app = doc.data();
+      html += `
+        <div>
+          <h3>${app.name}</h3>
+          <p>${app.description}</p>
+          <a href="${app.downloadUrl}" target="_blank">Download</a>
+        </div>
+        <hr>
+      `;
+    });
+
+    document.getElementById("apps").innerHTML = html;
+  }
+
+  loadApps();
+</script>
+
+</body>
+</html>
